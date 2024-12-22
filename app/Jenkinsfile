@@ -46,3 +46,13 @@ pipeline {
         }
     }
 }
+
+
+
+stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('SonarQube') { // Le nom configuré dans Jenkins
+            sh 'sonar-scanner'
+        }
+    }
+}
