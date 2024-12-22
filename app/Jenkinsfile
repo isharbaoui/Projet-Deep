@@ -27,6 +27,15 @@ pipeline {
             }
         }
 
+
+stage('SonarQube Analysis') {
+    steps {
+        withSonarQubeEnv('SonarQube') { // Le nom configuré dans Jenkins
+            sh 'sonar-scanner'
+        }
+    }
+}
+
         stage('Clean Up') {
             steps {
                 script {
@@ -43,16 +52,6 @@ pipeline {
                 // Nettoyage des conteneurs Docker inutilisés
                 sh 'docker system prune -f'
             }
-        }
-    }
-}
-
-
-
-stage('SonarQube Analysis') {
-    steps {
-        withSonarQubeEnv('SonarQube') { // Le nom configuré dans Jenkins
-            sh 'sonar-scanner'
         }
     }
 }
