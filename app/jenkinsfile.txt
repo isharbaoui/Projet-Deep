@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'docker build -t streamlit-app .'
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    sh 'docker run -d -p 8501:80 --name streamlit-app streamlit-app'
+                }
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                script {
+                    // Exemple : effectuer un test simple pour vérifier que l'application répond
+                    sh 'curl -I http://localhost:8501'
+                }
+            }
+        }
+
+        stage('Clean Up') {
+            steps {
+                script {
+                    sh 'docker stop streamlit-app || true'
+                    sh 'docker rm streamlit-app || true'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                // Nettoyage des conteneurs Docker inutilisés
+                sh 'docker system prune -f'
+            }
+        }
+    }
+}
